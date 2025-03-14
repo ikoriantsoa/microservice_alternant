@@ -76,6 +76,7 @@ export class WebinaireService {
       image: this.cryptageService.decrypt(web.image),
       source: this.cryptageService.decrypt(web.source),
     }));
+    console.log('decryptWebinaire', decryptedWebinaire);
 
     return decryptedWebinaire;
   }
@@ -99,6 +100,7 @@ export class WebinaireService {
       image: this.cryptageService.decrypt(web.image),
       source: this.cryptageService.decrypt(web.source),
     }));
+    console.log('decryptWebinaire', decryptedWebinaire);
 
     return decryptedWebinaire;
   }
