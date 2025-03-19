@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WebinaireModule } from './webinaire/webinaire.module';
 import { WebinaireAlternantEntity } from './webinaire/entity/webinaire.entity';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -20,7 +21,7 @@ import { WebinaireAlternantEntity } from './webinaire/entity/webinaire.entity';
     password: process.env.DB_PASSWORD,
     entities: [WebinaireAlternantEntity],
     synchronize: true,
-  }), CryptageModule, NextcloudModule, WebinaireModule],
+  }), CryptageModule, NextcloudModule, WebinaireModule, LoggerModule],
   controllers: [],
   providers: [],
 })

@@ -6,6 +6,7 @@ import { ICreateWebinaire } from './entity/ICreateWebinaire';
 import { ICryptage } from 'src/cryptage/interface/ICryptage';
 import { WebinaireAlternantEntity } from './entity/webinaire.entity';
 import { retry } from 'rxjs';
+import { LoggerService } from 'src/logger/logger.service';
 
 interface IWebinaire {
   keycloak_id_auteur: string;
@@ -23,6 +24,7 @@ export class WebinaireService {
     @InjectRepository(WebinaireAlternantEntity)
     private readonly webinaireApprenantEntity: Repository<WebinaireAlternantEntity>,
     private readonly cryptageService: CryptageService,
+    private readonly logger: LoggerService,
   ) {}
 
   /**
@@ -33,6 +35,7 @@ export class WebinaireService {
   public async createWebinaire(
     dataWebinaire: ICreateWebinaire,
   ): Promise<WebinaireAlternantEntity> {
+    this.logger.log(`Service pour créer un webinaire`);
     const {
       keycloak_id_auteur,
       titre,
@@ -43,7 +46,7 @@ export class WebinaireService {
       source,
     } = dataWebinaire;
 
-    
+    this.logger.log(`Récupération des données du webinaire`);
 
     const encryptedImage = this.cryptageService.encrypt(image);
     const encryptedSource = this.cryptageService.encrypt(source);
@@ -58,12 +61,13 @@ export class WebinaireService {
       source: encryptedSource,
     });
 
-    console.log(webinaire);
+    this.logger.log(`Enregistrment dans la base de données`);
 
     return await this.webinaireApprenantEntity.save(webinaire);
   }
 
   public async getAllWebinaireAlternant() {
+    this.logger.log(`Service pour voir tous les webinaires d'un alternant`);
     const alternants = await this.webinaireApprenantEntity.find();
 
     const decryptedWebinaire = alternants.map((web) => ({
@@ -76,12 +80,13 @@ export class WebinaireService {
       image: this.cryptageService.decrypt(web.image),
       source: this.cryptageService.decrypt(web.source),
     }));
-    console.log('decryptWebinaire', decryptedWebinaire);
+    this.logger.log(`Enregistrement dans la base de données`);
 
     return decryptedWebinaire;
   }
 
   public async getAllWebinaireByKeycloakId(keycloak_id: string) {
+    this.logger.log(`Service pour prendre tous les webiniares depuis l'id de Keycloak`);
     const webinaire = await this.webinaireApprenantEntity.find({
       where: { keycloak_id_auteur: keycloak_id },
     });
@@ -100,7 +105,7 @@ export class WebinaireService {
       image: this.cryptageService.decrypt(web.image),
       source: this.cryptageService.decrypt(web.source),
     }));
-    console.log('decryptWebinaire', decryptedWebinaire);
+    this.logger.log(`Enregistrement dans la base de données`);
 
     return decryptedWebinaire;
   }

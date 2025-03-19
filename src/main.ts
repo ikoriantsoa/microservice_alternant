@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestMicroservice } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { LoggerService } from './logger/logger.service';
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
@@ -12,6 +13,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen()
+  const logger = new LoggerService();
+  app.useLogger(logger);
 }
 bootstrap();
